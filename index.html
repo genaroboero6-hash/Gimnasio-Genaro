@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitPulse PRO &bull; Training & Biometrics</title>
+    <title>AURA FIT &bull; Intelligent Training & Biometrics</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,165 +12,331 @@
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#090D16',
-                        cardBg: '#131B2E',
-                        borderSubtle: '#1E293B',
+                        darkBg: '#080C14',
+                        cardBg: '#0F172A',
+                        cardBorder: '#1E293B',
                         accent: '#00E676',
-                        accentHover: '#00C853'
+                        accentHover: '#00C853',
+                        accentGlow: 'rgba(0, 230, 118, 0.15)'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome para iconos -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Client CDN -->
+    <!-- Supabase Client JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-accent {
+            box-shadow: 0 0 25px rgba(0, 230, 118, 0.2);
+        }
+    </style>
 </head>
-<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col font-sans selection:bg-accent selection:text-black">
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col selection:bg-accent selection:text-black">
 
-    <!-- Navbar -->
-    <header class="bg-cardBg border-b border-borderSubtle sticky top-0 z-50 backdrop-blur-md bg-opacity/80">
-        <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-cardBorder">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-accent/10 border border-accent/30 p-2 rounded-xl text-accent font-bold">
-                    <i class="fa-solid fa-bolt"></i>
+                <div class="bg-accent/10 border border-accent/30 p-2.5 rounded-xl text-accent font-bold">
+                    <i class="fa-solid fa-bolt-lightning text-lg"></i>
                 </div>
-                <span class="text-xl font-black tracking-wider text-white">FIT<span class="text-accent">PULSE</span></span>
+                <div>
+                    <span class="text-2xl font-black tracking-tight text-white">AURA<span class="text-accent">FIT</span></span>
+                    <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest text-slate-400 bg-slate-800 px-2 py-0.5 rounded ml-2 border border-slate-700">Enterprise</span>
+                </div>
             </div>
-            <div id="authNavArea" class="flex items-center space-x-3">
-                <button onclick="toggleAuthModal(true)" class="bg-accent hover:bg-accentHover text-black font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-xl transition shadow-lg shadow-accent/10">
+
+            <!-- Menú de Autenticación / Perfil -->
+            <div id="navAuthArea" class="flex items-center space-x-3">
+                <button onclick="openAuthModal('login')" class="text-slate-300 hover:text-white font-medium text-xs uppercase tracking-wider px-4 py-2.5 transition">
                     Iniciar Sesión
+                </button>
+                <button onclick="openAuthModal('register')" class="bg-accent hover:bg-accentHover text-black font-extrabold text-xs uppercase tracking-wider px-5 py-2.5 rounded-xl transition shadow-lg shadow-accent/20 glow-accent">
+                    Registrarse
+                </button>
+            </div>
+
+            <div id="navUserArea" class="hidden flex items-center space-x-3">
+                <div class="flex items-center space-x-3 bg-slate-900/80 border border-cardBorder py-1.5 px-3 rounded-xl">
+                    <div id="userAvatar" class="w-8 h-8 rounded-lg bg-accent/20 border border-accent/40 text-accent font-black text-xs flex items-center justify-center">
+                        --
+                    </div>
+                    <div class="text-left hidden md:block">
+                        <p id="userNameDisplay" class="text-xs font-bold text-white leading-tight">Cargando...</p>
+                        <p id="userEmailDisplay" class="text-[10px] text-slate-400 leading-tight">usuario@mail.com</p>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="text-slate-400 hover:text-red-400 border border-cardBorder hover:border-red-500/30 p-2.5 rounded-xl text-xs transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
-        
-        <!-- Hero & Biometric Onboarding Section -->
-        <section class="bg-cardBg border border-borderSubtle rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-6 py-10 w-full space-y-12">
+
+        <!-- Hero Banner -->
+        <section class="relative rounded-3xl p-8 md:p-12 overflow-hidden glass-panel border border-cardBorder">
+            <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <div class="max-w-2xl space-y-3 mb-8">
-                <span class="text-xs font-bold uppercase tracking-widest text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">Sistema Inteligente v1.0</span>
-                <h1 class="text-3xl md:text-4xl font-black tracking-tight text-white">Configuración Biométrica & Objetivos</h1>
-                <p class="text-slate-400 text-sm">Ingresá tus datos corporales para calcular tu plan de entrenamiento de hipertrofia personalizado.</p>
+            <div class="max-w-3xl space-y-4 relative z-10">
+                <div class="inline-flex items-center space-x-2 bg-accent/10 border border-accent/20 px-3.5 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                    <span class="text-xs font-semibold text-accent uppercase tracking-wider">Motor Biomécanico v2.4</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                    Optimización Física Personalizada por Inteligencia de Datos.
+                </h1>
+                <p class="text-slate-400 text-sm md:text-base max-w-2xl">
+                    Generación de programas de entrenamiento hiperespecíficos, seguimiento de sobrecarga progresiva y cálculo biométrico avanzado.
+                </p>
+            </div>
+        </section>
+
+        <!-- Formulario Biométrico -->
+        <section class="glass-panel border border-cardBorder rounded-3xl p-8 shadow-2xl relative space-y-6">
+            <div class="flex items-center justify-between border-b border-cardBorder pb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white">Configuración del Atleta</h2>
+                    <p class="text-xs text-slate-400">Ingresá tus parámetros físicos para calibrar la rutina.</p>
+                </div>
+                <i class="fa-solid fa-sliders text-slate-600 text-xl"></i>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Altura -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase">Altura (cm)</label>
-                    <input type="number" id="userHeight" placeholder="Ej: 178" class="w-full bg-darkBg border border-borderSubtle rounded-xl p-3 text-sm focus:outline-none focus:border-accent text-white">
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Altura (cm)</label>
+                    <div class="relative">
+                        <input type="number" id="bioHeight" placeholder="178" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white placeholder-slate-600">
+                        <span class="absolute right-4 top-3.5 text-xs text-slate-500 font-medium">cm</span>
+                    </div>
                 </div>
                 <!-- Peso -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase">Peso actual (kg)</label>
-                    <input type="number" id="userWeight" placeholder="Ej: 75.5" class="w-full bg-darkBg border border-borderSubtle rounded-xl p-3 text-sm focus:outline-none focus:border-accent text-white">
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Peso Corporal (kg)</label>
+                    <div class="relative">
+                        <input type="number" id="bioWeight" placeholder="75.5" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white placeholder-slate-600">
+                        <span class="absolute right-4 top-3.5 text-xs text-slate-500 font-medium">kg</span>
+                    </div>
                 </div>
                 <!-- Objetivo -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase">Objetivo Principal</label>
-                    <select id="userGoal" class="w-full bg-darkBg border border-borderSubtle rounded-xl p-3 text-sm focus:outline-none focus:border-accent text-white">
-                        <option value="hypertrophy">Ganar Masa Muscular</option>
-                        <option value="strength">Fuerza Máxima</option>
-                        <option value="fatloss">Definición / Quema</option>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Objetivo de Entrenamiento</label>
+                    <select id="bioGoal" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                        <option value="hypertrophy">Hipertrofia (Masa Muscular)</option>
+                        <option value="strength">Fuerza Máxima (Powerbuilding)</option>
+                        <option value="fatloss">Definición y Recomposición</option>
                     </select>
                 </div>
                 <!-- Días -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase">Días Disponibles</label>
-                    <select id="userDays" class="w-full bg-darkBg border border-borderSubtle rounded-xl p-3 text-sm focus:outline-none focus:border-accent text-white">
-                        <option value="3">3 Días (Fullbody)</option>
-                        <option value="4">4 Días (Torso / Pierna)</option>
-                        <option value="5" selected>5 Días (PPL / Torso-Pierna)</option>
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Días por Semana</label>
+                    <select id="bioDays" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                        <option value="3">3 Días (Fullbody Alta Frecuencia)</option>
+                        <option value="4">4 Días (Frecuencia 2 Torso/Pierna)</option>
+                        <option value="5" selected>5 Días (Push / Pull / Legs + Upper)</option>
                     </select>
                 </div>
             </div>
 
-            <button onclick="calculateAndGenerateRoutine()" class="w-full md:w-auto bg-accent hover:bg-accentHover text-black font-bold py-3.5 px-8 rounded-xl transition shadow-lg shadow-accent/20 flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <span>Generar Rutina a Medida</span>
-            </button>
-        </section>
-
-        <!-- Routine Output Container -->
-        <section id="routineResultSection" class="hidden space-y-4">
-            <h2 class="text-xl font-bold text-white flex items-center space-x-2">
-                <i class="fa-solid fa-clipboard-list text-accent"></i>
-                <span>Tu Plan de Entrenamiento Calculado</span>
-            </h2>
-            <div id="routineCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Generado dinámicamente -->
+            <div class="pt-2 flex justify-end">
+                <button onclick="generateCustomRoutine()" class="w-full md:w-auto bg-accent hover:bg-accentHover text-black font-extrabold py-4 px-8 rounded-xl transition shadow-xl shadow-accent/20 flex items-center justify-center space-x-3 text-sm glow-accent">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>Calcular y Procesar Plan</span>
+                </button>
             </div>
         </section>
 
+        <!-- Contenedor de Rutina Generada -->
+        <section id="routineResultSection" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-2xl font-black text-white tracking-tight">Plan Estructurado</h3>
+                <span class="text-xs bg-slate-900 border border-cardBorder text-slate-400 px-3 py-1 rounded-full">Frecuencia Calibrada</span>
+            </div>
+            <div id="routineCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </section>
     </main>
 
-    <!-- Auth Modal (Login / Registro) -->
-    <div id="authModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-cardBg border border-borderSubtle rounded-2xl max-w-md w-full p-6 space-y-6 relative shadow-2xl">
-            <button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
+    <!-- Modal de Autenticación (Login & Registro en Pestañas) -->
+    <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-panel border border-cardBorder rounded-3xl max-w-md w-full p-8 relative shadow-2xl space-y-6">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
             </button>
-            <div class="text-center space-y-2">
-                <h3 class="text-xl font-bold text-white">Acceso a FitPulse PRO</h3>
-                <p class="text-xs text-slate-400">Iniciá sesión para guardar tu progreso y rutinas en la nube.</p>
-            </div>
-            <div class="space-y-3">
-                <button onclick="loginWithGoogle()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-semibold py-3 px-4 rounded-xl transition flex items-center justify-center space-x-2 text-sm">
-                    <i class="fa-brands fa-google text-red-500"></i>
-                    <span>Continuar con Google</span>
+
+            <!-- Tabs de navegación entre Iniciar Sesión / Registrarse -->
+            <div class="flex border-b border-cardBorder">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 pb-3 font-bold text-sm text-center border-b-2 border-accent text-accent">
+                    Iniciar Sesión
                 </button>
-                <div class="relative flex py-2 items-center">
-                    <div class="flex-grow border-t border-borderSubtle"></div>
-                    <span class="flex-shrink mx-4 text-slate-500 text-xs uppercase">o con correo</span>
-                    <div class="flex-grow border-t border-borderSubtle"></div>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 pb-3 font-bold text-sm text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+                    Crear Cuenta
+                </button>
+            </div>
+
+            <!-- Formulario de LOGIN -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required placeholder="tu@email.com" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                 </div>
-                <input type="email" id="authEmail" placeholder="Correo electrónico" class="w-full bg-darkBg border border-borderSubtle rounded-xl p-3 text-sm focus:outline-none focus:border-accent text-white">
-                <input type="password" id="authPassword" placeholder="Contraseña" class="w-full bg-darkBg border border-borderSubtle rounded-xl p-3 text-sm focus:outline-none focus:border-accent text-white">
-                <button onclick="loginWithEmail()" class="w-full bg-accent hover:bg-accentHover text-black font-bold py-3 rounded-xl transition text-sm">
-                    Ingresar / Registrarse
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase">Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                </div>
+                <button type="submit" class="w-full bg-accent hover:bg-accentHover text-black font-extrabold py-3.5 rounded-xl transition text-sm shadow-lg shadow-accent/20">
+                    Ingresar a mi Perfil
                 </button>
-            </div>
+            </form>
+
+            <!-- Formulario de REGISTRO (Pedir Nombre, Apellido, Correo y Contraseña) -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase">Nombre</label>
+                        <input type="text" id="regFirstName" required placeholder="Juan" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase">Apellido</label>
+                        <input type="text" id="regLastName" required placeholder="Pérez" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase">Correo Electrónico</label>
+                    <input type="email" id="regEmail" required placeholder="tu@email.com" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase">Crear Contraseña</label>
+                    <input type="password" id="regPassword" minlength="6" required placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                </div>
+                <button type="submit" class="w-full bg-accent hover:bg-accentHover text-black font-extrabold py-3.5 rounded-xl transition text-sm shadow-lg shadow-accent/20">
+                    Crear Cuenta de Usuario
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-cardBg border-t border-borderSubtle mt-16 py-6 text-center text-xs text-slate-500">
-        <p>FitPulse PRO &bull; Desarrollado para rendimiento máximo.</p>
+    <!-- Footer Commercial SaaS -->
+    <footer class="glass-panel border-t border-cardBorder mt-20 py-8 text-center text-xs text-slate-500">
+        <p>&copy; 2026 AURA FIT Inc. All rights reserved. Software para Gimnasios y Entrenamiento Personalizado.</p>
     </footer>
 
-    <!-- Script de lógica -->
+    <!-- Lógica de Estado y Persistencia -->
     <script>
-        // CONFIGURACIÓN DE SUPABASE (Reemplaza con tus credenciales cuando crees tu proyecto en Supabase)
-        const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
-        const SUPABASE_ANON_KEY = 'TU-ANON-KEY';
-        
-        // Inicializar cliente si las credenciales están configuradas
-        let supabaseClient = null;
-        try {
-            if(SUPABASE_URL.includes('http')) {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-        } catch(e) { console.log("Supabase pendiente de configuración"); }
+        // ESTADO DE SESIÓN (Persistido en localStorage para prototipo o conectado a Supabase)
+        let currentUser = JSON.parse(localStorage.getItem('aurafit_user')) || null;
 
-        function toggleAuthModal(show) {
-            const modal = document.getElementById('authModal');
-            if(show) modal.classList.remove('hidden');
-            else modal.classList.add('hidden');
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUIState();
+        });
+
+        function updateUIState() {
+            const navAuthArea = document.getElementById('navAuthArea');
+            const navUserArea = document.getElementById('navUserArea');
+
+            if(currentUser) {
+                navAuthArea.classList.add('hidden');
+                navUserArea.classList.remove('hidden');
+
+                const initials = (currentUser.firstName[0] + currentUser.lastName[0]).toUpperCase();
+                document.getElementById('userAvatar').innerText = initials;
+                document.getElementById('userNameDisplay').innerText = `${currentUser.firstName} ${currentUser.lastName}`;
+                document.getElementById('userEmailDisplay').innerText = currentUser.email;
+            } else {
+                navAuthArea.classList.remove('hidden');
+                navUserArea.classList.add('hidden');
+            }
         }
 
-        function calculateAndGenerateRoutine() {
-            const height = document.getElementById('userHeight').value;
-            const weight = document.getElementById('userWeight').value;
-            const goal = document.getElementById('userGoal').value;
-            const days = document.getElementById('userDays').value;
+        function openAuthModal(mode) {
+            document.getElementById('authModal').classList.remove('hidden');
+            switchAuthTab(mode);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+
+            if(tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabLogin.className = "flex-1 pb-3 font-bold text-sm text-center border-b-2 border-accent text-accent";
+                tabRegister.className = "flex-1 pb-3 font-bold text-sm text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabRegister.className = "flex-1 pb-3 font-bold text-sm text-center border-b-2 border-accent text-accent";
+                tabLogin.className = "flex-1 pb-3 font-bold text-sm text-center border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            }
+        }
+
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('regFirstName').value;
+            const lastName = document.getElementById('regLastName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            // Guardar usuario en el estado
+            currentUser = { firstName, lastName, email };
+            localStorage.setItem('aurafit_user', JSON.stringify(currentUser));
+            
+            alert(`¡Cuenta creada con éxito! Bienvenido ${firstName} ${lastName}.`);
+            closeAuthModal();
+            updateUIState();
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            
+            // Simular login con el email ingresado
+            currentUser = { firstName: "Genaro", lastName: "Courtalon", email: email };
+            localStorage.setItem('aurafit_user', JSON.stringify(currentUser));
+
+            closeAuthModal();
+            updateUIState();
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('aurafit_user');
+            updateUIState();
+        }
+
+        function generateCustomRoutine() {
+            const height = document.getElementById('bioHeight').value;
+            const weight = document.getElementById('bioWeight').value;
+            const days = document.getElementById('bioDays').value;
 
             if(!height || !weight) {
-                alert('Por favor, ingresa tu altura y peso para calcular la rutina.');
+                alert('Ingresá tu altura y peso para procesar la rutina.');
                 return;
             }
 
@@ -179,68 +345,28 @@
             resultSection.classList.remove('hidden');
             container.innerHTML = '';
 
-            // Generador dinámico basado en los días seleccionados
-            let daysList = [];
-            if(days == '5') {
-                daysList = ['Día 1: Empuje (Push - Pecho/Hombro/Tríceps)', 'Día 2: Tracción (Pull - Espalda/Bíceps)', 'Día 3: Pierna Completa (Cuádriceps)', 'Día 4: Torso Superior (Fuerza)', 'Día 5: Pierna (Cadena Posterior)'];
-            } else if(days == '4') {
-                daysList = ['Día 1: Torso A', 'Día 2: Pierna A', 'Día 3: Torso B', 'Día 4: Pierna B'];
-            } else {
-                daysList = ['Día 1: Fullbody A', 'Día 2: Fullbody B', 'Día 3: Fullbody C'];
-            }
+            let sampleDays = days == '5' ? 
+                ['Push (Pecho/Hombro/Tríceps)', 'Pull (Espalda/Bíceps)', 'Legs (Enfoque Cuádriceps)', 'Torso Fuerza', 'Legs (Cadena Posterior)'] :
+                ['Fullbody A', 'Descanso', 'Fullbody B', 'Descanso', 'Fullbody C'];
 
-            daysList.forEach((dayTitle, idx) => {
+            sampleDays.forEach((title, idx) => {
                 container.innerHTML += `
-                    <div class="bg-darkBg border border-borderSubtle p-5 rounded-xl space-y-3 shadow-md">
+                    <div class="glass-panel border border-cardBorder p-6 rounded-2xl space-y-4 hover:border-accent/40 transition">
                         <div class="flex justify-between items-center">
-                            <span class="text-xs font-bold text-accent uppercase tracking-wider">Sesión ${idx + 1}</span>
-                            <span class="text-xs bg-cardBg px-2.5 py-1 rounded-lg text-slate-400 border border-borderSubtle">60-75 min</span>
+                            <span class="text-[10px] font-black text-accent uppercase tracking-widest bg-accent/10 border border-accent/20 px-2.5 py-1 rounded-md">Sesión 0${idx+1}</span>
+                            <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>60 min</span>
                         </div>
-                        <h4 class="font-bold text-sm text-white">${dayTitle}</h4>
-                        <ul class="text-xs space-y-2 text-slate-300 pt-2 border-t border-borderSubtle">
-                            <li class="flex justify-between"><span>Ejercicio Multiarticular Principal</span> <span class="text-accent font-semibold">4 series x 8 reps</span></li>
-                            <li class="flex justify-between"><span>Ejercicio Secundario</span> <span class="text-slate-400">3 series x 10 reps</span></li>
-                            <li class="flex justify-between"><span>Ejercicio de Aislamiento</span> <span class="text-slate-400">3 series x 12 reps</span></li>
-                        </ul>
+                        <h4 class="font-bold text-base text-white">${title}</h4>
+                        <div class="space-y-2 text-xs border-t border-cardBorder pt-3 text-slate-300">
+                            <div class="flex justify-between"><span>Ejercicio Compuesto</span><span class="text-accent font-semibold">4 x 8-10</span></div>
+                            <div class="flex justify-between"><span>Hipertrofia Secundario</span><span class="text-slate-400">3 x 10-12</span></div>
+                            <div class="flex justify-between"><span>Aislamiento / Core</span><span class="text-slate-400">3 x 12-15</span></div>
+                        </div>
                     </div>
                 `;
             });
 
-            window.scrollTo({ top: resultSection.offsetTop - 100, behavior: 'smooth' });
-        }
-
-        async function loginWithGoogle() {
-            if(!supabaseClient) {
-                alert('Conectá tus credenciales de Supabase en el código para habilitar el login real.');
-                return;
-            }
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
-            if(error) alert('Error en login: ' + error.message);
-        }
-
-        async function loginWithEmail() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            if(!email || !password) {
-                alert('Completá tu correo y contraseña.');
-                return;
-            }
-            if(!supabaseClient) {
-                alert('¡Simulación exitosa! Configurá tus claves de Supabase para guardar datos en la nube.');
-                toggleAuthModal(false);
-                return;
-            }
-            // Lógica con Supabase real
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if(error) {
-                // Intentar registro si no existe
-                const { data: regData, error: regError } = await supabaseClient.auth.signUp({ email, password });
-                if(regError) alert('Error: ' + regError.message);
-                else alert('¡Registro exitoso! Verificá tu correo.');
-            } else {
-                alert('¡Bienvenido de vuelta!');
-                toggleAuthModal(false);
-            }
+            window.scrollTo({ top: resultSection.offsetTop - 80, behavior: 'smooth' });
         }
     </script>
 </body>
