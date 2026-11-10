@@ -32,7 +32,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase Client JS -->
+    <!-- Supabase Client JS (Opcional si querés conectar backend después) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -58,11 +58,11 @@
                 </div>
                 <div>
                     <span class="text-2xl font-black tracking-tight text-white">AURA<span class="text-accent">FIT</span></span>
-                    <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest text-slate-400 bg-slate-800 px-2 py-0.5 rounded ml-2 border border-slate-700">Enterprise</span>
+                    <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest text-slate-400 bg-slate-800 px-2 py-0.5 rounded ml-2 border border-slate-700">PRO</span>
                 </div>
             </div>
 
-            <!-- Menú de Autenticación / Perfil -->
+            <!-- Botones de Auth (Invitado) -->
             <div id="navAuthArea" class="flex items-center space-x-3">
                 <button onclick="openAuthModal('login')" class="text-slate-300 hover:text-white font-medium text-xs uppercase tracking-wider px-4 py-2.5 transition">
                     Iniciar Sesión
@@ -72,119 +72,167 @@
                 </button>
             </div>
 
+            <!-- Perfil de Usuario Logueado -->
             <div id="navUserArea" class="hidden flex items-center space-x-3">
                 <div class="flex items-center space-x-3 bg-slate-900/80 border border-cardBorder py-1.5 px-3 rounded-xl">
                     <div id="userAvatar" class="w-8 h-8 rounded-lg bg-accent/20 border border-accent/40 text-accent font-black text-xs flex items-center justify-center">
                         --
                     </div>
                     <div class="text-left hidden md:block">
-                        <p id="userNameDisplay" class="text-xs font-bold text-white leading-tight">Cargando...</p>
-                        <p id="userEmailDisplay" class="text-[10px] text-slate-400 leading-tight">usuario@mail.com</p>
+                        <p id="userNameDisplay" class="text-xs font-bold text-white leading-tight">Atleta</p>
+                        <p id="userEmailDisplay" class="text-[10px] text-slate-400 leading-tight">correo@mail.com</p>
                     </div>
                 </div>
-                <button onclick="handleLogout()" class="text-slate-400 hover:text-red-400 border border-cardBorder hover:border-red-500/30 p-2.5 rounded-xl text-xs transition">
+                <button onclick="handleLogout()" title="Cerrar Sesión" class="text-slate-400 hover:text-red-400 border border-cardBorder hover:border-red-500/30 p-2.5 rounded-xl text-xs transition">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
+    <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto px-6 py-10 w-full space-y-12">
 
-        <!-- Hero Banner -->
+        <!-- Hero Section -->
         <section class="relative rounded-3xl p-8 md:p-12 overflow-hidden glass-panel border border-cardBorder">
             <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
-            
             <div class="max-w-3xl space-y-4 relative z-10">
                 <div class="inline-flex items-center space-x-2 bg-accent/10 border border-accent/20 px-3.5 py-1.5 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                    <span class="text-xs font-semibold text-accent uppercase tracking-wider">Motor Biomécanico v2.4</span>
+                    <span class="text-xs font-semibold text-accent uppercase tracking-wider">Motor Biométrico & Hipertrofia</span>
                 </div>
                 <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
-                    Optimización Física Personalizada por Inteligencia de Datos.
+                    Diseña tu físico con precisión milimétrica.
                 </h1>
-                <p class="text-slate-400 text-sm md:text-base max-w-2xl">
-                    Generación de programas de entrenamiento hiperespecíficos, seguimiento de sobrecarga progresiva y cálculo biométrico avanzado.
+                <p class="text-slate-400 text-sm md:text-base">
+                    Genera rutinas inteligentes adaptadas a tu estructura corporal, controla tu sobrecarga y lleva tu rendimiento al siguiente nivel.
                 </p>
             </div>
         </section>
 
-        <!-- Formulario Biométrico -->
-        <section class="glass-panel border border-cardBorder rounded-3xl p-8 shadow-2xl relative space-y-6">
+        <!-- Calculadora Biométrica y Generador -->
+        <section class="glass-panel border border-cardBorder rounded-3xl p-8 shadow-2xl space-y-6">
             <div class="flex items-center justify-between border-b border-cardBorder pb-4">
                 <div>
                     <h2 class="text-xl font-bold text-white">Configuración del Atleta</h2>
-                    <p class="text-xs text-slate-400">Ingresá tus parámetros físicos para calibrar la rutina.</p>
+                    <p class="text-xs text-slate-400">Ingresa tus datos para calibrar el volumen semanal.</p>
                 </div>
                 <i class="fa-solid fa-sliders text-slate-600 text-xl"></i>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Altura -->
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Altura (cm)</label>
-                    <div class="relative">
-                        <input type="number" id="bioHeight" placeholder="178" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white placeholder-slate-600">
-                        <span class="absolute right-4 top-3.5 text-xs text-slate-500 font-medium">cm</span>
-                    </div>
+                    <input type="number" id="bioHeight" placeholder="178" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                 </div>
-                <!-- Peso -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Peso Corporal (kg)</label>
-                    <div class="relative">
-                        <input type="number" id="bioWeight" placeholder="75.5" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white placeholder-slate-600">
-                        <span class="absolute right-4 top-3.5 text-xs text-slate-500 font-medium">kg</span>
-                    </div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Peso (kg)</label>
+                    <input type="number" id="bioWeight" placeholder="75.5" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                 </div>
-                <!-- Objetivo -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Objetivo de Entrenamiento</label>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Objetivo</label>
                     <select id="bioGoal" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
-                        <option value="hypertrophy">Hipertrofia (Masa Muscular)</option>
-                        <option value="strength">Fuerza Máxima (Powerbuilding)</option>
-                        <option value="fatloss">Definición y Recomposición</option>
+                        <option value="hypertrophy">Hipertrofia (Ganar Músculo)</option>
+                        <option value="strength">Fuerza Máxima</option>
+                        <option value="fatloss">Definición / Quema</option>
                     </select>
                 </div>
-                <!-- Días -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Días por Semana</label>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Días disponibles</label>
                     <select id="bioDays" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
-                        <option value="3">3 Días (Fullbody Alta Frecuencia)</option>
-                        <option value="4">4 Días (Frecuencia 2 Torso/Pierna)</option>
-                        <option value="5" selected>5 Días (Push / Pull / Legs + Upper)</option>
+                        <option value="3">3 Días (Fullbody)</option>
+                        <option value="4">4 Días (Torso / Pierna)</option>
+                        <option value="5" selected>5 Días (Push / Pull / Legs)</option>
                     </select>
                 </div>
             </div>
 
-            <div class="pt-2 flex justify-end">
+            <div class="flex justify-end pt-2">
                 <button onclick="generateCustomRoutine()" class="w-full md:w-auto bg-accent hover:bg-accentHover text-black font-extrabold py-4 px-8 rounded-xl transition shadow-xl shadow-accent/20 flex items-center justify-center space-x-3 text-sm glow-accent">
-                    <i class="fa-solid fa-microchip"></i>
-                    <span>Calcular y Procesar Plan</span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Generar Rutina Personalizada</span>
                 </button>
             </div>
         </section>
 
-        <!-- Contenedor de Rutina Generada -->
+        <!-- Resultados del Plan -->
         <section id="routineResultSection" class="hidden space-y-6">
-            <div class="flex justify-between items-center">
-                <h3 class="text-2xl font-black text-white tracking-tight">Plan Estructurado</h3>
-                <span class="text-xs bg-slate-900 border border-cardBorder text-slate-400 px-3 py-1 rounded-full">Frecuencia Calibrada</span>
-            </div>
+            <h3 class="text-2xl font-black text-white tracking-tight">Tu Plan de Entrenamiento</h3>
             <div id="routineCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Se llena dinámicamente con JavaScript -->
+                <!-- Dinámico -->
             </div>
         </section>
+
+        <!-- Biblioteca de Ejercicios Interactiva -->
+        <section class="space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h3 class="text-2xl font-black text-white tracking-tight">Biblioteca Técnica & Biomecánica</h3>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="filterExercises('all')" class="bg-accent text-black font-bold px-3.5 py-2 rounded-xl transition">Todos</button>
+                    <button onclick="filterExercises('chest')" class="bg-cardBg border border-cardBorder hover:border-accent/40 px-3.5 py-2 rounded-xl transition font-medium">Pecho</button>
+                    <button onclick="filterExercises('back')" class="bg-cardBg border border-cardBorder hover:border-accent/40 px-3.5 py-2 rounded-xl transition font-medium">Espalda</button>
+                    <button onclick="filterExercises('legs')" class="bg-cardBg border border-cardBorder hover:border-accent/40 px-3.5 py-2 rounded-xl transition font-medium">Piernas</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="exerciseGrid">
+                <!-- Ejercicio 1 -->
+                <div class="exercise-card glass-panel border border-cardBorder rounded-2xl overflow-hidden shadow-md group hover:border-accent/40 transition" data-category="chest">
+                    <div class="bg-slate-950 h-52 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-10"></div>
+                        <i class="fa-solid fa-cube text-5xl text-slate-700 group-hover:scale-110 transition duration-300"></i>
+                        <span class="absolute top-3 right-3 z-20 bg-accent/20 border border-accent/30 text-accent text-[10px] uppercase font-black px-2.5 py-1 rounded-lg">Animación 3D</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="text-[10px] font-bold text-accent uppercase tracking-widest">Pectoral Mayor</span>
+                        <h4 class="font-bold text-lg text-white">Press Inclinado con Mancuernas</h4>
+                        <p class="text-xs text-slate-400">Enfoque superior del pecho y deltoides anterior con recorrido completo.</p>
+                        <button onclick="openExerciseModal('Press Inclinado con Mancuernas', 'Mantener los codos a 45 grados respecto al torso. Controlar la fase excéntrica durante 2 segundos.')" class="w-full mt-2 bg-slate-900 border border-cardBorder hover:border-accent text-xs py-2.5 rounded-xl font-bold transition">Ver Claves Técnicas</button>
+                    </div>
+                </div>
+
+                <!-- Ejercicio 2 -->
+                <div class="exercise-card glass-panel border border-cardBorder rounded-2xl overflow-hidden shadow-md group hover:border-accent/40 transition" data-category="back">
+                    <div class="bg-slate-950 h-52 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-10"></div>
+                        <i class="fa-solid fa-cube text-5xl text-slate-700 group-hover:scale-110 transition duration-300"></i>
+                        <span class="absolute top-3 right-3 z-20 bg-accent/20 border border-accent/30 text-accent text-[10px] uppercase font-black px-2.5 py-1 rounded-lg">Animación 3D</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="text-[10px] font-bold text-accent uppercase tracking-widest">Dorsal Ancho</span>
+                        <h4 class="font-bold text-lg text-white">Jalón al Pecho en Polea</h4>
+                        <p class="text-xs text-slate-400">Desarrollo de amplitud de espalda con agarre prono abierto.</p>
+                        <button onclick="openExerciseModal('Jalón al Pecho en Polea', 'Llevar la barra hacia la parte superior del pecho sacando pecho al final del tirón. Evitar inercia con el torso.')" class="w-full mt-2 bg-slate-900 border border-cardBorder hover:border-accent text-xs py-2.5 rounded-xl font-bold transition">Ver Claves Técnicas</button>
+                    </div>
+                </div>
+
+                <!-- Ejercicio 3 -->
+                <div class="exercise-card glass-panel border border-cardBorder rounded-2xl overflow-hidden shadow-md group hover:border-accent/40 transition" data-category="legs">
+                    <div class="bg-slate-950 h-52 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-10"></div>
+                        <i class="fa-solid fa-cube text-5xl text-slate-700 group-hover:scale-110 transition duration-300"></i>
+                        <span class="absolute top-3 right-3 z-20 bg-accent/20 border border-accent/30 text-accent text-[10px] uppercase font-black px-2.5 py-1 rounded-lg">Animación 3D</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <span class="text-[10px] font-bold text-accent uppercase tracking-widest">Cuádriceps & Glúteos</span>
+                        <h4 class="font-bold text-lg text-white">Sentadilla Libre con Barra</h4>
+                        <p class="text-xs text-slate-400">El ejercicio rey multiarticular para desarrollo de pierna completa.</p>
+                        <button onclick="openExerciseModal('Sentadilla Libre con Barra', 'Mantener los talones firmes en el suelo, profundidad paralela o superior, abdomen contraído en todo momento.')" class="w-full mt-2 bg-slate-900 border border-cardBorder hover:border-accent text-xs py-2.5 rounded-xl font-bold transition">Ver Claves Técnicas</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Modal de Autenticación (Login & Registro en Pestañas) -->
+    <!-- Modal de Autenticación (Login & Registro con Nombre, Apellido, Email, Password) -->
     <div id="authModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
         <div class="glass-panel border border-cardBorder rounded-3xl max-w-md w-full p-8 relative shadow-2xl space-y-6">
             <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
-            <!-- Tabs de navegación entre Iniciar Sesión / Registrarse -->
+            <!-- Tabs -->
             <div class="flex border-b border-cardBorder">
                 <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 pb-3 font-bold text-sm text-center border-b-2 border-accent text-accent">
                     Iniciar Sesión
@@ -194,10 +242,10 @@
                 </button>
             </div>
 
-            <!-- Formulario de LOGIN -->
+            <!-- Formulario de Login -->
             <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
                 <div class="space-y-1.5">
-                    <label class="block text-xs font-semibold text-slate-300 uppercase">Correo Electrónico</label>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase">Correo electrónico</label>
                     <input type="email" id="loginEmail" required placeholder="tu@email.com" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                 </div>
                 <div class="space-y-1.5">
@@ -209,16 +257,16 @@
                 </button>
             </form>
 
-            <!-- Formulario de REGISTRO (Pedir Nombre, Apellido, Correo y Contraseña) -->
+            <!-- Formulario de Registro (Nombre, Apellido, Correo, Contraseña) -->
             <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1.5">
                         <label class="block text-xs font-semibold text-slate-300 uppercase">Nombre</label>
-                        <input type="text" id="regFirstName" required placeholder="Juan" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                        <input type="text" id="regFirstName" required placeholder="Genaro" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                     </div>
                     <div class="space-y-1.5">
                         <label class="block text-xs font-semibold text-slate-300 uppercase">Apellido</label>
-                        <input type="text" id="regLastName" required placeholder="Pérez" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
+                        <input type="text" id="regLastName" required placeholder="Courtalon" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                     </div>
                 </div>
                 <div class="space-y-1.5">
@@ -230,20 +278,42 @@
                     <input type="password" id="regPassword" minlength="6" required placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950/80 border border-cardBorder rounded-xl p-3.5 text-sm focus:outline-none focus:border-accent text-white">
                 </div>
                 <button type="submit" class="w-full bg-accent hover:bg-accentHover text-black font-extrabold py-3.5 rounded-xl transition text-sm shadow-lg shadow-accent/20">
-                    Crear Cuenta de Usuario
+                    Crear Cuenta de Atleta
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Footer Commercial SaaS -->
+    <!-- Modal de Ejercicio / Técnica 3D -->
+    <div id="exerciseModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+        <div class="glass-panel border border-cardBorder rounded-3xl max-w-lg w-full p-8 relative shadow-2xl space-y-6">
+            <button onclick="closeExerciseModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="space-y-2">
+                <span class="text-[10px] font-bold text-accent uppercase tracking-widest bg-accent/10 px-3 py-1 rounded-full border border-accent/20">Biomecánica Avanzada</span>
+                <h3 id="modalExerciseTitle" class="text-2xl font-black text-white">Nombre del Ejercicio</h3>
+            </div>
+            <div class="bg-slate-950 h-56 rounded-2xl flex items-center justify-center relative border border-cardBorder">
+                <i class="fa-solid fa-play text-accent text-4xl animate-pulse"></i>
+                <span class="absolute bottom-3 left-4 text-xs text-slate-400">Simulación interactiva 3D</span>
+            </div>
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Claves de Postura & Ejecución:</h4>
+                <p id="modalExerciseDesc" class="text-sm text-slate-300 bg-slate-900/60 p-4 rounded-xl border border-cardBorder leading-relaxed">
+                    Instrucciones técnicas...
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer class="glass-panel border-t border-cardBorder mt-20 py-8 text-center text-xs text-slate-500">
-        <p>&copy; 2026 AURA FIT Inc. All rights reserved. Software para Gimnasios y Entrenamiento Personalizado.</p>
+        <p>&copy; 2026 AURA FIT Inc. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Lógica de Estado y Persistencia -->
+    <!-- Lógica de la Aplicación -->
     <script>
-        // ESTADO DE SESIÓN (Persistido en localStorage para prototipo o conectado a Supabase)
         let currentUser = JSON.parse(localStorage.getItem('aurafit_user')) || null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -301,9 +371,7 @@
             const firstName = document.getElementById('regFirstName').value;
             const lastName = document.getElementById('regLastName').value;
             const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
 
-            // Guardar usuario en el estado
             currentUser = { firstName, lastName, email };
             localStorage.setItem('aurafit_user', JSON.stringify(currentUser));
             
@@ -316,8 +384,7 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             
-            // Simular login con el email ingresado
-            currentUser = { firstName: "Genaro", lastName: "Courtalon", email: email };
+            currentUser = { firstName: "Atleta", lastName: "PRO", email: email };
             localStorage.setItem('aurafit_user', JSON.stringify(currentUser));
 
             closeAuthModal();
@@ -336,7 +403,7 @@
             const days = document.getElementById('bioDays').value;
 
             if(!height || !weight) {
-                alert('Ingresá tu altura y peso para procesar la rutina.');
+                alert('Por favor, ingresa tu altura y peso para calibrar el programa.');
                 return;
             }
 
@@ -346,7 +413,7 @@
             container.innerHTML = '';
 
             let sampleDays = days == '5' ? 
-                ['Push (Pecho/Hombro/Tríceps)', 'Pull (Espalda/Bíceps)', 'Legs (Enfoque Cuádriceps)', 'Torso Fuerza', 'Legs (Cadena Posterior)'] :
+                ['Push (Pecho/Hombro/Tríceps)', 'Pull (Espalda/Bíceps)', 'Legs (Cuádriceps)', 'Torso (Fuerza)', 'Legs (Cadena Posterior)'] :
                 ['Fullbody A', 'Descanso', 'Fullbody B', 'Descanso', 'Fullbody C'];
 
             sampleDays.forEach((title, idx) => {
@@ -354,19 +421,40 @@
                     <div class="glass-panel border border-cardBorder p-6 rounded-2xl space-y-4 hover:border-accent/40 transition">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-black text-accent uppercase tracking-widest bg-accent/10 border border-accent/20 px-2.5 py-1 rounded-md">Sesión 0${idx+1}</span>
-                            <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i>60 min</span>
+                            <span class="text-xs text-slate-500">60-75 min</span>
                         </div>
                         <h4 class="font-bold text-base text-white">${title}</h4>
                         <div class="space-y-2 text-xs border-t border-cardBorder pt-3 text-slate-300">
-                            <div class="flex justify-between"><span>Ejercicio Compuesto</span><span class="text-accent font-semibold">4 x 8-10</span></div>
-                            <div class="flex justify-between"><span>Hipertrofia Secundario</span><span class="text-slate-400">3 x 10-12</span></div>
-                            <div class="flex justify-between"><span>Aislamiento / Core</span><span class="text-slate-400">3 x 12-15</span></div>
+                            <div class="flex justify-between"><span>Compuesto Principal</span><span class="text-accent font-semibold">4 x 8 reps</span></div>
+                            <div class="flex justify-between"><span>Secundario Hipertrofia</span><span class="text-slate-400">3 x 10 reps</span></div>
+                            <div class="flex justify-between"><span>Aislamiento / Bombeo</span><span class="text-slate-400">3 x 12 reps</span></div>
                         </div>
                     </div>
                 `;
             });
 
             window.scrollTo({ top: resultSection.offsetTop - 80, behavior: 'smooth' });
+        }
+
+        function filterExercises(category) {
+            const cards = document.querySelectorAll('.exercise-card');
+            cards.forEach(card => {
+                if(category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function openExerciseModal(title, desc) {
+            document.getElementById('modalExerciseTitle').innerText = title;
+            document.getElementById('modalExerciseDesc').innerText = desc;
+            document.getElementById('exerciseModal').classList.remove('hidden');
+        }
+
+        function closeExerciseModal() {
+            document.getElementById('exerciseModal').classList.add('hidden');
         }
     </script>
 </body>
